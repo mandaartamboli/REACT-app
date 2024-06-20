@@ -1,0 +1,35 @@
+name: CICD
+on:
+    push:
+        branches:
+            - deploy-to-ec2
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout source
+              uses: actions/checkout@v3
+            - name: Login to Docker Hub
+              run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD  }}
+            - name: BuildDocker Image
+              run: docker build -t mandaartamboli/REACT-app .
+            - name: publish image to docker hub
+              run: docker push mandaartamboli/REACT-app:latest
+
+    deploy:
+      needs: build
+      runs-on: aws-ec2
+      steps:
+      - name: pULL IMAGE FROM DOCKER HUB
+        run: DOCKER PULL mandaartamboli/REACT-app:latest
+      - name: Deleteold Container
+        run: docker rm -f reactContainer
+      - name: Run docker container
+        run: docker run -d -p 3000:80 --name  reactContainer mandaartamboli/REACT-app:latest
+
+
+
+
+            
+
