@@ -19,7 +19,7 @@ jobs:
 
     deploy:
       needs: build
-      runs-on: aws-ec2-runner
+      runs-on: [self-hosted, aws-ec2-runner]
       steps:
       - name: pULL IMAGE FROM DOCKER HUB
         run: DOCKER PULL mandaartamboli/react-app:latest
